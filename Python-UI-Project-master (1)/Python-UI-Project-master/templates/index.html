@@ -1,0 +1,156 @@
+<html>
+
+<head><title>Self Service BI Tools</title> 
+    <meta charset=utf-8> </head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    
+    
+<style>
+    body{
+    margin:0;
+    font-family: sans-serif;
+    }
+    .FL{
+    float: left;
+    }
+    .h10{
+        height: 10%;
+    }
+    .P1{
+    padding: 2em;
+    }
+    .filter{
+        margin-top: 15%;
+        margin-left: 9%;
+    }
+    .header{
+   background-color: #b71d1d;
+    color: white;
+    /* height: 6%; */
+    padding: 15px;
+        font-size: 1.5em;
+    font-family: sans-serif;
+        text-align: center;
+    }
+    .button{
+        background-color: #e0dada;
+    padding: .5em;
+    margin: 2em;
+    }
+    .CP{
+    cursor: pointer;
+    }
+</style>
+    <body>
+    		<div class="header">Self service BI Reporting</div>
+<div class="h10 filter">	
+		<div class="FL h10 P1">
+		<label>Select Dimension:</label><br>
+		<input type="radio" id="dis" name="District" value="District">
+		<label for="dis">District</label><br>
+		<input type="radio" id="reg" name="Region" value="Region">
+		<label for="reg">Region</label><br>
+		<input type="radio" id="ban" name="Bank" value="Bank">
+		<label for="ban">Bank</label><br>
+		</div>
+        <div class="FL h10 P1">
+
+		<label>Select Granularity:</label><br>
+		<input type="radio" id="yea" name="Years" value="Years">
+		<label for="yea">Years</label><br>
+		<input type="radio" id="mon" name="Months" value="Months">
+		<label for="mon">Months</label><br>
+		<input type="radio" id="ytd" name="YTD" value="YTD">
+		<label for="ytd">YTD</label><br>
+        
+        </div>
+        <div class="FL h10 P1">
+
+		<label>Select Report Type:</label><br>
+		<input type="radio" id="P" name="pptx" value="pptx">
+		<label for="P">PPTX</label><br>
+		<input type="radio" id="X" name="xlxs" value="xlxs">
+		<label for="X">XLSX</label><br>
+		<input type="radio" id="PD" name="pdf" value="pdf">
+		<label for="PD">PDF</label><br>
+        
+        </div>
+        <div class="FL h10 P1">
+
+		<label>Select Download Option:</label><br>
+		<input type="radio" id="D" name="down" value="down">
+		<label for="D">Download</label><br>
+		<input type="radio" id="S" name="share" value="share">
+		<label for="S">Shared Folder</label><br>
+		<input type="radio" id="E" name="email" value="email">
+		<label for="E">Email</label><br>
+        
+        </div>
+        <div id='submit' class="button FL CP ">Generate</div>
+    </div>	
+
+    </body>
+<script>
+    var DimValue = "";
+    var TimePeriod = "";
+    function dropdownChange(){
+    $("#dis").click(function(){
+    	$("#reg").prop("checked", false);
+    	$("#ban").prop("checked", false);
+    		DimValue = this.value;
+             
+    });
+    $("#reg").click(function(){
+    	$("#dis").prop("checked", false);
+    	$("#ban").prop("checked", false);
+    		DimValue = this.value;
+    });
+    $("#ban").click(function(){
+    	$("#reg").prop("checked", false);
+    	$("#dis").prop("checked", false);
+    	    DimValue = this.value;
+    });
+    $("#yea").click(function(){
+    	$("#mon").prop("checked", false);
+    	$("#ytd").prop("checked", false);
+    	    TimePeriod = this.value;
+    });
+    $("#mon").click(function(){
+    	$("#yea").prop("checked", false);
+    	$("#ytd").prop("checked", false);
+    	TimePeriod = this.value;
+    });
+    $("#ytd").click(function(){
+    	$("#mon").prop("checked", false);
+    	$("#yea").prop("checked", false);
+    	TimePeriod = this.value;
+    });
+        //submit responce passed to python
+     $("#submit").click(function(){
+         var data = { get: [DimValue,TimePeriod]};
+         $.ajax({
+         type: 'POST',
+         url: '/filters/',
+         dataType: "json",
+         contentType: 'application/json;charset=UTF-8',
+         data: JSON.stringify(data),
+         async:false,
+         success: function(response){
+             debugger
+         alert(response.value);
+         console.log("psp")
+         },
+         error:function(error){
+             console.log(error);
+         }
+         });
+        });
+        
+    }
+    
+    //When the DOM element gets ready to load all events 
+    $( document ).ready(function() {
+   dropdownChange();
+});
+</script>
+</html>
